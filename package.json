@@ -1,0 +1,16 @@
+{
+  "name": "node-design-patterns",
+  "version": "1.0.0",
+  "description": "NodeJS application design patters",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Node",
+    "NodeJS",
+    "JavaScript"
+  ],
+  "author": "Austin Lauritsen",
+  "license": "MIT"
+}
