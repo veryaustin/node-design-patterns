@@ -1,5 +1,5 @@
 var assert = require("assert");
-var Log = function () {
+var Log = function (args) {
   assert.ok(args.subject && args.entry && args.userId, "Need subject, entry userId");
   var log = {};
   log.subject = args.subject;
@@ -9,3 +9,5 @@ var Log = function () {
 
   return log;
 };
+
+module.exports = Log;

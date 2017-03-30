@@ -2,6 +2,8 @@ var User = require("../models/user");
 var Application = require("../models/application");
 var db = require("secondthought");
 var assert = require("assert");
+var Log = require("../models/log");
+var bc = require("bcrypt-nodejs");
 
 var RegResult = function () {
   var result = {
@@ -29,6 +31,20 @@ var Registration = function (db) {
     db.users.exists({email: app.email}, next);
   };
 
+  var saveUser = function (user, next) {
+    db.users.save(user, next);
+  };
+
+  var addLogEntry = function (user, next) {
+    var log = new Log({
+      subject: "Registration",
+      userId: user.id,
+      entry: "Successfully Registered"
+    });
+    db.logs.save(log, next);
+  };
+
+
   self.applyForMembership = function (args, next) {
     var regResult = new RegResult();
     var app = new Application(args);
@@ -38,12 +54,25 @@ var Registration = function (db) {
     checkIfUserExists(app, function (err, exists) {
       assert.ok(err === null, err);
       if (!exists) {
-        regResult.success = true;
-        regResult.message = "Welcome!";
-
-        regResult.user = new User(args);
+        // Create a new user
+        var user = new User(app);
+        user.status = "approved";
+        user.signInCount = 1;
+        // Hash the password
+        user.hashedPassword = bc.hashSync(app.password);
+        // Save User
+        saveUser(user, function (err, newUser) {
+          assert.ok(err === null, err);
+          regResult.user = newUser;
+          // Create Log Entry
+          addLogEntry(newUser, function(err, newLog) {
+            regResult.log = newLog;
+            regResult.success = true;
+            regResult.message = "Welcome!";
+            next(null, regResult);
+          });
+        });
       }
-      next(null, regResult);
     });
   };
 };
