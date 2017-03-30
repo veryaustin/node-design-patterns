@@ -13,7 +13,10 @@
   ],
   "author": "Austin Lauritsen",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "secondthought": "github:robconery/second-thought"
+  },
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.1.0",

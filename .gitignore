@@ -62,3 +62,6 @@ typings/
 
 # VSCode
 .vscode
+
+# RethinkDB Data
+rethinkdb_data/
