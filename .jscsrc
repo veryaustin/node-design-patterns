@@ -20,7 +20,7 @@
     "allowRegex": true
   },
   "validateIndentation": 2,
-  "validateQuoteMarks": "'",
+  "validateQuoteMarks": false,
   "disallowMultipleLineStrings": true,
   "disallowMixedSpacesAndTabs": true,
   "disallowTrailingWhitespace": true,
