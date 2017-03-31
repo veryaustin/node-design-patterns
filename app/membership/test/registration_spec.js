@@ -9,11 +9,10 @@ describe("Registration", function () {
       done();
     });
   });
-
   describe("a valid application", function () {
     var regResult = {};
     before(function (done) {
-      db.users.destroyAll(function (err, results) {
+      db.users.destroyAll(function (err, result) {
         reg.applyForMembership({
           email: "austin@test.com",
           password: "password",
@@ -24,7 +23,6 @@ describe("Registration", function () {
         });
       });
     });
-
     it("is successful", function () {
       regResult.success.should.equal(true);
     });
@@ -46,22 +44,88 @@ describe("Registration", function () {
   });
 
   describe("an empty or null email", function () {
-    it("is not successful");
-    it("tells user that email is required");
+    var regResult = {};
+    before(function (done) {
+      reg.applyForMembership({
+        email: null,
+        password: "password",
+        confirm: "password"
+      }, function (err, result) {
+        regResult = result;
+        done();
+      });
+    });
+    it("is not successful", function () {
+      regResult.success.should.equal(false);
+    });
+    it("tells user that email is required", function () {
+      regResult.message.should.equal("Email and password are required");
+    });
   });
 
   describe("empty or null password", function () {
-    it("is not successful");
-    it("tells user that password is required");
+    var regResult = {};
+    before(function (done) {
+      reg.applyForMembership({
+        email: "test@test.com",
+        password: null,
+        confirm: "password"
+      }, function (err, result) {
+        regResult = result;
+        done();
+      });
+    });
+    it("is not successful", function () {
+      regResult.success.should.equal(false);
+    });
+    it("tells user that password is required", function () {
+      regResult.message.should.equal("Email and password are required");
+    });
   });
 
   describe("password and confirm mismatch", function () {
-    it("is not successful");
-    it("tells user passwords don't match");
+    var regResult = {};
+    before(function (done) {
+      reg.applyForMembership({
+        email: "test@test.com",
+        password: "goofy",
+        confirm: "password"
+      }, function (err, result) {
+        regResult = result;
+        done();
+      });
+    });
+    it("is not successful", function () {
+      regResult.success.should.equal(false);
+    });
+    it("tells user passwords don't match", function () {
+      regResult.message.should.equal("Passwords don't match");
+    });
   });
 
   describe("email already exists", function () {
-    it("is not successful");
-    it("tells user that email already exists");
+    before(function (done) {
+      var newUser = {
+        email: "austin@test.com",
+        password: "password",
+        confirm: "password" };
+      db.users.destroyAll(function (err, deleted) {
+        reg.applyForMembership(newUser, function (err, result) {
+          reg.applyForMembership(newUser, function (err, nextResult) {
+            regResult = nextResult;
+            done();
+          });
+        });
+      });
+    });
+    it("is not successful", function () {
+      regResult.success.should.equal(false);
+    });
+    it("tells user that email already exists", function () {
+      regResult.message.should.equal("This email already exists");
+    });
   });
+
+
+
 });
