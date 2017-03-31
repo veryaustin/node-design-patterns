@@ -72,7 +72,7 @@ var Registration = function (db) {
 
   self.applyForMembership = function (args, next) {
     continueWith = next;
-    
+
     var app = new Application(args);
     self.emit("application-received", app);
   };
@@ -82,8 +82,8 @@ var Registration = function (db) {
     regResult.success = true;
     regResult.message = "Welcome!";
     regResult.user = app.user;
-    regResult.log = app.log
-    if(continueWith) {
+    regResult.log = app.log;
+    if (continueWith) {
       continueWith(null, regResult);
     }
   };
